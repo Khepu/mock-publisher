@@ -1,0 +1,21 @@
+{
+  "name": "publisher-tester",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start:build": "tsc -w",
+    "start:run": "nodemon build/index.js",
+    "start": "concurrently yarn:start:*"
+  },
+  "dependencies": {
+    "amqplib": "^0.8.0",
+    "concurrently": "^6.2.1",
+    "nodemon": "^2.0.12",
+    "rxjs": "^7.3.0",
+    "typescript": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.8.2"
+  }
+}
