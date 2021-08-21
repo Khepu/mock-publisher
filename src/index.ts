@@ -1,16 +1,6 @@
 import amqp from 'amqplib';
 import { delay, from, Observable, range, tap } from 'rxjs';
 
-const observable = new Observable(subscriber => {
-  subscriber.next(1);
-  subscriber.next(2);
-  subscriber.next(3);
-  setTimeout(() => {
-    subscriber.next(4);
-    subscriber.complete();
-  }, 1000);
-});
-
 const main = async () => {
   const connection = await amqp.connect('amqp://localhost:5672');
 
@@ -18,10 +8,16 @@ const main = async () => {
 
   channel.assertQueue('Hello');
 
-  range(1, 10)
-    .pipe(delay(100))
+  range(1, 5)
     .pipe(tap(message => channel.sendToQueue('Hello', Buffer.from('ASDASDSD'))))
-    .subscribe();
+    .subscribe({
+      next: value => {
+        console.log(value);
+      },
+      complete: () => {
+        console.log('Complete!');
+      },
+    });
 };
 
 main();

@@ -41,15 +41,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var amqplib_1 = __importDefault(require("amqplib"));
 var rxjs_1 = require("rxjs");
-var observable = new rxjs_1.Observable(function (subscriber) {
-    subscriber.next(1);
-    subscriber.next(2);
-    subscriber.next(3);
-    setTimeout(function () {
-        subscriber.next(4);
-        subscriber.complete();
-    }, 1000);
-});
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
     var connection, channel;
     return __generator(this, function (_a) {
@@ -61,30 +52,18 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
             case 2:
                 channel = _a.sent();
                 channel.assertQueue('Hello');
-                rxjs_1.range(1, 10)
-                    .pipe(rxjs_1.delay(100))
+                rxjs_1.range(1, 5)
                     .pipe(rxjs_1.tap(function (message) { return channel.sendToQueue('Hello', Buffer.from('ASDASDSD')); }))
-                    .subscribe();
+                    .subscribe({
+                    next: function (value) {
+                        console.log(value);
+                    },
+                    complete: function () {
+                        console.log('Complete!');
+                    },
+                });
                 return [2 /*return*/];
         }
     });
 }); };
 main();
-//  , function (error0, connection) {
-//   if (error0) {
-//     throw error0;
-//   }
-//   connection.createChannel((error1, channel) => {
-//     if (error1) {
-//       throw error1;
-//     }
-//     var queue = 'hello';
-//     var msg = 'Hello world';
-//     channel.assertQueue(queue, {
-//       durable: false,
-//     });
-//     channel.sendToQueue(queue, Buffer.from(msg));
-//     console.log(' [x] Sent %s', msg);
-//   });
-// });
-// //
