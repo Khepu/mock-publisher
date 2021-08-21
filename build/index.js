@@ -35,33 +35,37 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var amqplib_1 = __importDefault(require("amqplib"));
-var rxjs_1 = require("rxjs");
+var channel_1 = require("./channel");
+var publisher_1 = require("./publisher");
+var config = {
+    connectionUri: 'amqp://localhost:5672',
+    queueName: 'Hello',
+    messagePrototype: {
+        asd: 'asdasdsda',
+        asd2: 'asasadssasad',
+    },
+};
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var connection, channel;
+    var connectionUri, queueName, messagePrototype, channel, publisher;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, amqplib_1.default.connect('amqp://localhost:5672')];
+            case 0:
+                connectionUri = config.connectionUri, queueName = config.queueName, messagePrototype = config.messagePrototype;
+                return [4 /*yield*/, channel_1.getChannel({
+                        connectionUri: connectionUri,
+                        queueName: queueName,
+                    })];
             case 1:
-                connection = _a.sent();
-                return [4 /*yield*/, connection.createChannel()];
-            case 2:
                 channel = _a.sent();
-                channel.assertQueue('Hello');
-                rxjs_1.range(1, 5)
-                    .pipe(rxjs_1.tap(function (message) { return channel.sendToQueue('Hello', Buffer.from('ASDASDSD')); }))
-                    .subscribe({
-                    next: function (value) {
-                        console.log(value);
-                    },
-                    complete: function () {
-                        console.log('Complete!');
-                    },
-                });
+                return [4 /*yield*/, publisher_1.getPublisher({
+                        channel: channel,
+                        queueName: queueName,
+                        messagePrototype: messagePrototype,
+                    })];
+            case 2:
+                publisher = _a.sent();
+                publisher.subscribe({ next: console.log });
                 return [2 /*return*/];
         }
     });

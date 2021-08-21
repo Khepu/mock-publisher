@@ -1,23 +1,32 @@
 import amqp from 'amqplib';
-import { delay, from, Observable, range, tap } from 'rxjs';
+import { delay, from, interval, Observable, range, repeat, tap } from 'rxjs';
+import { getChannel } from './channel';
+import { getPublisher } from './publisher';
+
+const config = {
+  connectionUri: 'amqp://localhost:5672',
+  queueName: 'Hello',
+  messagePrototype: {
+    asd: 'asdasdsda',
+    asd2: 'asasadssasad',
+  },
+};
 
 const main = async () => {
-  const connection = await amqp.connect('amqp://localhost:5672');
+  const { connectionUri, queueName, messagePrototype } = config;
 
-  const channel = await connection.createChannel();
+  const channel = await getChannel({
+    connectionUri,
+    queueName,
+  });
 
-  channel.assertQueue('Hello');
+  const publisher = await getPublisher({
+    channel,
+    queueName,
+    messagePrototype,
+  });
 
-  range(1, 5)
-    .pipe(tap(message => channel.sendToQueue('Hello', Buffer.from('ASDASDSD'))))
-    .subscribe({
-      next: value => {
-        console.log(value);
-      },
-      complete: () => {
-        console.log('Complete!');
-      },
-    });
+  publisher.subscribe({ next: console.log });
 };
 
 main();
