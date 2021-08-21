@@ -11,10 +11,8 @@ export const getChannel = async ({
 }: channelProps): Promise<amqp.Channel> => {
   const connection = await amqp.connect(connectionUri);
   const channel = await connection.createChannel();
+
   channel.assertQueue(queueName);
 
   return channel;
 };
-
-//'amqp://localhost:5672'
-//'Hello'
