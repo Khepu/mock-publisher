@@ -2,42 +2,43 @@ import { getChannel } from './channel';
 import { getPublisher } from './publisher';
 import { getEnv } from './utils/get-env';
 import dotenv from 'dotenv';
-import { CustomType, jsonParser } from './utils/json-parser';
+import { schemaToPrototype } from './utils/schema-to-prototype';
+import { CustomValueType } from './utils/util-types';
 
 dotenv.config();
+
+const jason = {
+  id: CustomValueType.UUID,
+  numAr: [CustomValueType.NUMBER],
+  ranStr: CustomValueType.STRING,
+  createdAt: CustomValueType.TIMESTAMP,
+  ranFloat: CustomValueType.FLOAT,
+};
 
 const config = {
   connectionUri: getEnv('RABBIT_URI'),
   queueName: getEnv('QUEUE'),
-  messagePrototype: getEnv('MESSAGE'),
+  messagePrototypeStream: schemaToPrototype(jason),
   intervalMillis: parseInt(getEnv('INTERVAL')),
 };
 
-const jason = {
-  createdAt: CustomType.TIMESTAMP,
-  id: CustomType.UUID,
-  numAr: [CustomType.NUMBER],
-  numStr: CustomType.STRING,
-};
-
 const main = async () => {
-  console.log(jsonParser(jason));
+  const { connectionUri, queueName, messagePrototypeStream, intervalMillis } =
+    config;
 
-  // const { connectionUri, queueName, messagePrototype, intervalMillis } = config;
+  const channel = await getChannel({
+    connectionUri,
+    queueName,
+  });
 
-  // const channel = await getChannel({
-  //   connectionUri,
-  //   queueName,
-  // });
+  const publisher = await getPublisher({
+    channel,
+    queueName,
+    messagePrototypeStream,
+    intervalMillis,
+  });
 
-  // const publisher = await getPublisher({
-  //   channel,
-  //   queueName,
-  //   messagePrototype,
-  //   intervalMillis,
-  // });
-
-  // publisher.subscribe({ next: console.log });
+  publisher.subscribe(console.log);
 };
 
 main();

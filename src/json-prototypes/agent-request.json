@@ -1,5 +1,6 @@
 {
   "id":"uuid",
   "createdAt":"timestamp",
-  "visionResponse":"uuid"
+  "visionResponse":"uuid",
+  "numAr": ["number"]
 }
