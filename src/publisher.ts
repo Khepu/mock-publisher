@@ -4,7 +4,7 @@ import amqp from 'amqplib';
 type propNames = {
   channel: amqp.Channel;
   queueName: string;
-  messagePrototype: { [key: string]: unknown };
+  messagePrototype: string;
   intervalMillis: number;
 };
 
@@ -15,7 +15,7 @@ export const getPublisher = async ({
   intervalMillis,
 }: propNames) =>
   interval(intervalMillis)
-    .pipe(map(num => ({ ...messagePrototype, count: num })))
+    .pipe(map(num => messagePrototype + num))
     .pipe(
       tap(message =>
         channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)))

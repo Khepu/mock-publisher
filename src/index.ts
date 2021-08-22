@@ -1,14 +1,15 @@
 import { getChannel } from './channel';
 import { getPublisher } from './publisher';
+import { getEnv } from './utils/get-env';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const config = {
-  connectionUri: 'amqp://localhost:5672',
-  queueName: 'helloo',
-  messagePrototype: {
-    asd: 'asdasdsda',
-    asd2: 'asasadssasad',
-  },
-  intervalMillis: 200,
+  connectionUri: getEnv('RABBIT_URI'),
+  queueName: getEnv('QUEUE'),
+  messagePrototype: getEnv('MESSAGE'),
+  intervalMillis: parseInt(getEnv('INTERVAL')),
 };
 
 const main = async () => {
