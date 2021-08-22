@@ -2,6 +2,7 @@ import { getChannel } from './channel';
 import { getPublisher } from './publisher';
 import { getEnv } from './utils/get-env';
 import dotenv from 'dotenv';
+import { CustomType, jsonParser } from './utils/json-parser';
 
 dotenv.config();
 
@@ -12,22 +13,31 @@ const config = {
   intervalMillis: parseInt(getEnv('INTERVAL')),
 };
 
+const jason = {
+  createdAt: CustomType.TIMESTAMP,
+  id: CustomType.UUID,
+  numAr: [CustomType.NUMBER],
+  numStr: CustomType.STRING,
+};
+
 const main = async () => {
-  const { connectionUri, queueName, messagePrototype, intervalMillis } = config;
+  console.log(jsonParser(jason));
 
-  const channel = await getChannel({
-    connectionUri,
-    queueName,
-  });
+  // const { connectionUri, queueName, messagePrototype, intervalMillis } = config;
 
-  const publisher = await getPublisher({
-    channel,
-    queueName,
-    messagePrototype,
-    intervalMillis,
-  });
+  // const channel = await getChannel({
+  //   connectionUri,
+  //   queueName,
+  // });
 
-  publisher.subscribe({ next: console.log });
+  // const publisher = await getPublisher({
+  //   channel,
+  //   queueName,
+  //   messagePrototype,
+  //   intervalMillis,
+  // });
+
+  // publisher.subscribe({ next: console.log });
 };
 
 main();
