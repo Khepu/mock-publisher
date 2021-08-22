@@ -41,14 +41,12 @@ const parseValue = (type: CustomType): string | number | Date => {
   }
 };
 
-const wrapWithArrray =
-  (type: CustomType) =>
-  (mapper: (type: CustomType) => string | Date | number) =>
-    randomLengthArray(1, 10).fill(type).map(mapper);
+const wrapWithArrray = (value: CustomType) =>
+  randomLengthArray(1, 10).fill(value);
 
-const parseValueInterm = (value: CustomType | CustomType[]) => {
+const parseArray = (value: CustomType | CustomType[]) => {
   if (isArray(value)) {
-    return wrapWithArrray(value[0])(parseValue);
+    return wrapWithArrray(value[0]).map(parseValue);
   } else {
     return parseValue(value);
   }
@@ -57,7 +55,7 @@ const parseValueInterm = (value: CustomType | CustomType[]) => {
 export const jsonParser = (json: JsonParserProps) =>
   Object.entries(json).reduce(
     (acc, [key, value]: [string, CustomType | CustomType[]]) => {
-      return { ...acc, [key]: parseValueInterm(value) };
+      return { ...acc, [key]: parseArray(value) };
     },
     {}
   );
