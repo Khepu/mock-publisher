@@ -30,4 +30,8 @@ export type GeneratedValue = Date | number | string;
 type Elem = GeneratedValueArray;
 export interface GeneratedValueArray extends Array<Elem | GeneratedValue> {}
 
-export type TypeToValueMapper = (value: CustomValueType) => GeneratedValue;
+export type ToValueParser = (value: CustomValueType) => GeneratedValue;
+
+export type ValueGenerator = (
+  parser: ToValueParser
+) => GeneratedValue | GeneratedValueArray;
