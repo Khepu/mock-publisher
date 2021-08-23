@@ -1,13 +1,16 @@
 {
-  "name": "publisher-tester",
+  "name": "mock-publisher",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT",
+  "license": "proprietary",
   "scripts": {
-    "start:concurrently:build": "tsc -w",
-    "start:concurrently:run": "nodemon build/index.js",
-    "start:docker": "cross-env STAGE=DOCKER concurrently yarn:start:concurrently:*",
-    "start:dev": "cross-env STAGE=DEV concurrently yarn:start:concurrently:*"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "yarn run clean && tsc",
+    "build:dev": "tsc -w",
+    "clean": "rimraf build/",
+    "lint": "eslint . --ext .ts",
+    "start": "npm run build && node build/index.js",
+    "start:dev": "nodemon"
   },
   "dependencies": {
     "amqplib": "^0.8.0",
@@ -15,12 +18,14 @@
     "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.12",
+    "rimraf": "^3.0.0",
     "rxjs": "^7.3.0",
     "typescript": "^4.3.5",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/amqplib": "^0.8.2",
+    "@types/rx": "^4.1.2",
     "@types/uuid": "^8.3.1"
   }
 }
