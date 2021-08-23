@@ -4,13 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start:build": "tsc -w",
-    "start:run": "nodemon build/index.js",
-    "start": "concurrently yarn:start:*"
+    "start:concurrently:build": "tsc -w",
+    "start:concurrently:run": "nodemon build/index.js",
+    "start:docker": "cross-env STAGE=DOCKER concurrently yarn:start:concurrently:*",
+    "start:dev": "cross-env STAGE=DEV concurrently yarn:start:concurrently:*"
   },
   "dependencies": {
     "amqplib": "^0.8.0",
     "concurrently": "^6.2.1",
+    "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.12",
     "rxjs": "^7.3.0",
