@@ -2,14 +2,14 @@ import { getChannel } from './channel';
 import { getPublisher } from './publisher';
 import { getEnv } from './utils/get-env';
 import dotenv from 'dotenv';
-import { agentRequestSchema } from './schemas/agent-request';
+import { schemas } from './schemas';
 
 dotenv.config();
 
 const config = {
   connectionUri: getEnv('RABBIT_URI'),
   queueName: getEnv('QUEUE'),
-  schema: agentRequestSchema,
+  schema: schemas[getEnv('SCHEMA')],
   intervalMillis: parseInt(getEnv('INTERVAL')),
 };
 
