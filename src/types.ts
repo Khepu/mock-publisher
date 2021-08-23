@@ -36,8 +36,8 @@ export type CustomType = CustomValueType | CustomValueType[];
 
 export type GeneratedValue = Date | number | string;
 
-type Elem = GeneratedValueArray;
-export interface GeneratedValueArray extends Array<Elem | GeneratedValue> {}
+//type Elem = GeneratedValueArray;
+export interface GeneratedValueArray extends Array<GeneratedValueArray | GeneratedValue> {}
 
 export type ToValueParser = (value: CustomValueType) => GeneratedValue;
 

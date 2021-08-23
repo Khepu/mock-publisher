@@ -10,15 +10,14 @@ type propNames = {
   intervalMillis: number;
 };
 
-export const getPublisher = async ({
+export const getPublisher = ({
   channel,
   queueName,
   schema,
   intervalMillis,
-}: propNames): Promise<Observable<ParsedSchema>> =>
-  interval(intervalMillis).pipe(
-    mergeMap(_ => parseSchema(schema)),
-    tap(message =>
-      channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)))
-    )
-  );
+}: propNames): Observable<ParsedSchema> =>
+  interval(intervalMillis)
+    .pipe(
+      mergeMap(__ => parseSchema(schema)),
+      tap(message => channel
+        .sendToQueue(queueName, Buffer.from(JSON.stringify(message)))));
