@@ -20,3 +20,16 @@ export const randomString = () => {
     .map(_ => chars[randomNum(1, chars.length)])
     .join('');
 };
+
+export const parseBoolean = (str: string): boolean => {
+  switch (str.toLowerCase()) {
+    case 'true':
+      return true;
+    case 'false':
+      return false;
+    case '':
+      return false;
+    default:
+      throw new Error('Invalid boolean string');
+  }
+};

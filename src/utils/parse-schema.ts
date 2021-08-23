@@ -1,6 +1,5 @@
 import { from, map, Observable, reduce } from 'rxjs';
 import { v4 } from 'uuid';
-import { randomFloat, randomNum, randomString } from './helpers';
 import {
   CustomValueType,
   GeneratedValue,
@@ -10,7 +9,8 @@ import {
   SchemaTypes,
   ToValueParser,
   ValueGenerator,
-} from './util-types';
+} from '../types';
+import { randomFloat, randomNum, randomString } from './helpers';
 
 const parseSchemaType: ToValueParser = type => {
   switch (type) {

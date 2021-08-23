@@ -1,3 +1,12 @@
+export type Configuration = {
+  connectionUri: string;
+  queueName: string;
+  schema: Schema;
+  intervalMillis: number;
+  isEnvironmentInstance?: boolean;
+  host?: string;
+};
+
 export enum CustomValueType {
   TIMESTAMP,
   UUID,
