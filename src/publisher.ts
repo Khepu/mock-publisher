@@ -1,23 +1,23 @@
-import { interval, map, tap, Observable, mergeMap } from 'rxjs';
+import { interval, tap, mergeMap } from 'rxjs';
 import amqp from 'amqplib';
-import { ValueGenerator } from './utils/util-types';
-import { prototypeParser } from './utils/prototype-parser';
+import { Schema } from './utils/util-types';
+import { parseSchema } from './utils/parse-schema';
 
 type propNames = {
   channel: amqp.Channel;
   queueName: string;
-  messagePrototypeStream: Observable<[string, ValueGenerator]>;
+  schema: Schema;
   intervalMillis: number;
 };
 
 export const getPublisher = async ({
   channel,
   queueName,
-  messagePrototypeStream,
+  schema,
   intervalMillis,
 }: propNames) =>
   interval(intervalMillis).pipe(
-    mergeMap(_ => prototypeParser(messagePrototypeStream)),
+    mergeMap(_ => parseSchema(schema)),
     tap(message =>
       channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)))
     )

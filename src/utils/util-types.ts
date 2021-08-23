@@ -1,11 +1,27 @@
 export enum CustomValueType {
-  TIMESTAMP = 'timestamp',
-  UUID = 'uuid',
-  NUMBER = 'number',
-  STRING = 'string',
-  INT = 'int',
-  FLOAT = 'float',
+  TIMESTAMP,
+  UUID,
+  STRING,
+  INT,
+  FLOAT,
 }
+
+export type SchemaTypes =
+  | {
+      type: 'array';
+      of: CustomValueType;
+      dimensions: number;
+      lengths: number[];
+    }
+  | { type: CustomValueType; value?: GeneratedValue };
+
+export type Schema = {
+  [key: string]: SchemaTypes;
+};
+
+export type ParsedSchema = {
+  [key: string]: GeneratedValue | GeneratedValueArray;
+};
 
 export type CustomType = CustomValueType | CustomValueType[];
 
@@ -15,7 +31,3 @@ type Elem = GeneratedValueArray;
 export interface GeneratedValueArray extends Array<Elem | GeneratedValue> {}
 
 export type TypeToValueMapper = (value: CustomValueType) => GeneratedValue;
-
-export type ValueGenerator = (
-  mapper: TypeToValueMapper
-) => GeneratedValue | GeneratedValueArray;

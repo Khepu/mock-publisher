@@ -4,13 +4,12 @@ export const randomNum = (start: number, end: number) =>
   Math.floor(Math.random() * end) + start;
 
 export const randomFloat = (start: number, end: number) =>
-  Math.round(Math.random() * end * 10000000) / 10000000;
+  Math.round(Math.random() * end * 10000000) / 10000000 + start;
 
 export const randomLengthArray = (start: number, end: number) =>
   new Array(randomNum(start, end));
 
-export const wrapWithArrray = <T>(value: T): T[] =>
-  randomLengthArray(1, 10).fill(value);
+export const wrapWithArrray = <T>(value: T): T[] => new Array().fill(value);
 
 export const randomString = () => {
   const chars =
