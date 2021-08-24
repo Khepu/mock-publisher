@@ -9,11 +9,11 @@ export const randomFloat = (start: number, end: number): number =>
 export const randomLengthArray = (start: number, end: number): number[] =>
   new Array(randomNum(start, end));
 
-export const randomString = () => {
+export const randomString = (start: number, end: number) => {
   const chars =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'.split('');
 
-  return randomLengthArray(10, 20)
+  return randomLengthArray(start, end)
     .fill(0)
     .map(_ => chars[randomNum(1, chars.length)])
     .join('');
