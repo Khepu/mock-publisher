@@ -1,4 +1,4 @@
-import { interval, tap, mergeMap, Observable, flatMap, map } from 'rxjs';
+import { interval, tap, mergeMap, Observable } from 'rxjs';
 import amqp from 'amqplib';
 import { parseSchema } from './utils/parse-schema';
 import { ParsedSchema, Schema } from './types';
@@ -17,7 +17,7 @@ export const getPublisher = ({
   intervalMillis,
 }: propNames): Observable<ParsedSchema> =>
   interval(intervalMillis).pipe(
-    flatMap(__ => schema.pipe(flatMap(parseSchema))),
+    mergeMap(__ => schema.pipe(mergeMap(parseSchema))),
     tap(message =>
       channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)))
     )

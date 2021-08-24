@@ -1,6 +1,6 @@
 import { Schema } from '../types';
 import { promises } from 'fs';
-import { catchError, EMPTY, from, map, Observable, of } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
 import { join } from 'path';
 
 const readFile = promises.readFile;

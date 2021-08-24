@@ -5,10 +5,10 @@ import dotenv from 'dotenv';
 import { getSchema } from './schemas';
 import { validate } from './validation/configuration-validation';
 import { parseBoolean } from './utils/helpers';
-import { Configuration, ParsedSchema } from './types';
+import { Configuration } from './types';
 import { Channel } from 'amqplib';
 
-import { flatMap, from, tap } from 'rxjs';
+import { mergeMap, from } from 'rxjs';
 
 const main = async () => {
   dotenv.config();
@@ -28,7 +28,7 @@ const main = async () => {
 
   from(getChannel(connectionUri, queueName))
     .pipe(
-      flatMap((channel: Channel) =>
+      mergeMap((channel: Channel) =>
         from(
           getPublisher({
             channel,
