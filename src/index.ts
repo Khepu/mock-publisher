@@ -14,10 +14,10 @@ const main = async () => {
   dotenv.config();
 
   const config: Configuration = {
-    connectionUri: getEnv('RABBIT_URI'),
+    connectionUri: getEnv('RABBIT_CONNECTION'),
     queueName: getEnv('RABBIT_QUEUE'),
-    schema: getSchema(getEnv('SCHEMA')),
-    intervalMillis: parseInt(getEnv('RABBIT_INTERVAL')),
+    schema: getSchema(getEnv('SCHEMA_NAME')),
+    intervalMillis: parseInt(getEnv('INTERVAL')),
     isEnvironmentInstance: parseBoolean(getEnv('IS_INSTANCE', true)),
     host: getEnv('HOST', true),
   };
