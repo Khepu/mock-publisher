@@ -1,24 +1,26 @@
+import { Observable } from 'rxjs';
+
 export type Configuration = {
   connectionUri: string;
   queueName: string;
-  schema: Schema;
+  schema: Observable<Schema>;
   intervalMillis: number;
   isEnvironmentInstance?: boolean;
   host?: string;
 };
 
 export enum CustomValueType {
-  TIMESTAMP,
-  UUID,
-  STRING,
-  INT,
-  FLOAT,
+  TIMESTAMP = 'timestamp',
+  UUID = 'uuid',
+  STRING = 'string',
+  INT = 'int',
+  FLOAT = 'float',
 }
 
 export type SchemaTypes =
   | {
       type: 'array';
-      of: CustomValueType;
+      of: string;
       dimensions: number;
       lengths: number[];
     }
@@ -37,9 +39,10 @@ export type CustomType = CustomValueType | CustomValueType[];
 export type GeneratedValue = Date | number | string;
 
 //type Elem = GeneratedValueArray;
-export interface GeneratedValueArray extends Array<GeneratedValueArray | GeneratedValue> {}
+export interface GeneratedValueArray
+  extends Array<GeneratedValueArray | GeneratedValue> {}
 
-export type ToValueParser = (value: CustomValueType) => GeneratedValue;
+export type ToValueParser = (value: string) => GeneratedValue;
 
 export type ValueGenerator = (
   parser: ToValueParser

@@ -33,23 +33,22 @@ const getRange = (end: number) =>
   Object.keys(new Array(end).fill(0)).map(num => parseInt(num));
 
 const splitArray = (array: any[], every: number) =>
-  getRange(array.length / every)
-    .map(num => array.slice(num * every, (num + 1) * every));
+  getRange(array.length / every).map(num =>
+    array.slice(num * every, (num + 1) * every)
+  );
 
-const generateArray = (lengths: number[], dimensions: number, of: CustomValueType) =>
+const generateArray =
+  (lengths: number[], dimensions: number, of: string) =>
   (parser: ToValueParser) => {
-    const numOfElems = lengths
-      .reduce((acc, cur) => cur * acc, 1);
+    const numOfElems = lengths.reduce((acc, cur) => cur * acc, 1);
 
     const values = getRange(numOfElems).map(_ => parser(of));
 
     const generateArrayAux = (
       n: number,
       acc: GeneratedValueArray
-    ): GeneratedValueArray => n <= 0
-        ? acc
-        : generateArrayAux(n - 1, splitArray(acc, lengths[n - 1]));
-
+    ): GeneratedValueArray =>
+      n <= 0 ? acc : generateArrayAux(n - 1, splitArray(acc, lengths[n - 1]));
 
     return generateArrayAux(
       dimensions - 1,
@@ -57,7 +56,8 @@ const generateArray = (lengths: number[], dimensions: number, of: CustomValueTyp
     )[0];
   };
 
-const parseArray = (schemaType: SchemaTypes) =>
+const parseArray =
+  (schemaType: SchemaTypes) =>
   (parser: ToValueParser): GeneratedValue | GeneratedValueArray => {
     if (schemaType.type === 'array') {
       const { dimensions, of, lengths } = schemaType;
@@ -69,9 +69,17 @@ const parseArray = (schemaType: SchemaTypes) =>
       : parser(schemaType.type);
   };
 
-export const parseSchema = (schema: Schema): Observable<ParsedSchema> => from(Object.entries(schema))
-  .pipe(
-    flatMap(([key, value]: [string, SchemaTypes]) => of(parseArray(value))
-      .pipe(
-        map(parsedSchemaType => valueGenerator(parseSchemaType)),
-        reduce((acc, value) => ({ ...acc, [key]: value }), {}))));
+export const parseSchema = (schema: Schema): Observable<ParsedSchema> =>
+  from(Object.entries(schema)).pipe(
+    map(([key, value]: [string, SchemaTypes]): [string, ValueGenerator] => [
+      key,
+      parseArray(value),
+    ]),
+    map(
+      ([key, valueGenerator]: [string, ValueGenerator]): [
+        string,
+        GeneratedValue | GeneratedValueArray
+      ] => [key, valueGenerator(parseSchemaType)]
+    ),
+    reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+  );

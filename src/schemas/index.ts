@@ -1,25 +1,13 @@
-import { CustomValueType, Schema } from '../types';
+import { Schema } from '../types';
+import { promises } from 'fs';
+import { catchError, EMPTY, from, map, Observable, of } from 'rxjs';
+import { join } from 'path';
 
-const schema1: Schema = {
-  id: { type: CustomValueType.UUID },
-  createdAt: { type: CustomValueType.TIMESTAMP },
-  visionResponse: { type: CustomValueType.UUID, value: 'carla1he' },
-  numAr: {
-    type: 'array',
-    of: CustomValueType.INT,
-    dimensions: 4,
-    lengths: [3, 2, 2, 2],
-  },
-  predeterminedValue: { type: CustomValueType.INT, value: 123 },
-};
+const readFile = promises.readFile;
 
-const schema2: Schema = {
-  id: { type: CustomValueType.UUID },
-  createdAt: { type: CustomValueType.TIMESTAMP },
-  visionResponse: { type: CustomValueType.UUID },
-};
-
-export const schemas: { [key: string]: Schema } = {
-  schema1,
-  schema2,
+export const getSchema = (schemaName: string): Observable<Schema> => {
+  return from(readFile(join(__dirname, `${schemaName}.json`))).pipe(
+    map((buffer: Buffer) => buffer.toString()),
+    map(bufferString => JSON.parse(bufferString))
+  );
 };

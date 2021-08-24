@@ -1,0 +1,5 @@
+{
+  "id": { "type": "uuid" },
+  "createdAt": { "type": "timestamp" },
+  "visionResponse": { "type": "uuid" }
+}
