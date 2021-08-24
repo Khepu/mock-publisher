@@ -19,7 +19,7 @@ const parseSchemaType: ToValueParser = type => {
     case CustomValueType.INT:
       return randomNum(1, 100);
     case CustomValueType.STRING:
-      return randomString();
+      return randomString(10, 20);
     case CustomValueType.TIMESTAMP:
       return new Date(Date.now());
     case CustomValueType.UUID:
@@ -61,6 +61,7 @@ const parseArray =
   (parser: ToValueParser): GeneratedValue | GeneratedValueArray => {
     if (schemaType.type === 'array') {
       const { dimensions, of, lengths } = schemaType;
+      if (dimensions !== lengths.length) throw new Error('Invalid Schema');
       return generateArray(lengths, dimensions, of)(parser);
     }
 
