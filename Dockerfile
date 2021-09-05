@@ -8,7 +8,8 @@ ENV RABBIT_HOST=localhost \
     RABBIT_PORT=5672 \
     RABBIT_USER=guest \
     RABBIT_PASS=guest \
-    LOGGING_LEVEL=warn
+    IS_INSTANCE=False \
+    LOGGING_LEVEL=warn 
 
 RUN yarn install \
     && npm run build \
