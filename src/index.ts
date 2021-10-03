@@ -79,6 +79,14 @@ const main = async () => {
       )
     )
     .subscribe();
+
+  const app = express();
+
+  app.get('/health', async (req, res) => {
+    res.sendStatus(200);
+  });
+
+  app.listen(5000);
 };
 
 main();
