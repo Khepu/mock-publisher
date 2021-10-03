@@ -7,6 +7,5 @@ export const getChannel = (
   queueName: string
 ): Observable<Channel> =>
   from(connect(connectionUri)).pipe(
-    mergeMap((connection: Connection) => from(connection.createChannel())),
-    tap((channel: Channel) => channel.assertQueue(queueName))
+    mergeMap((connection: Connection) => from(connection.createChannel()))
   );

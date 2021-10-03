@@ -2,7 +2,8 @@ import { Observable } from 'rxjs';
 
 export type Configuration = {
   connectionUri: string;
-  queueName: string;
+  publishQueueName: string;
+  consumeQueueName: string;
   schema: Observable<Schema>;
   intervalMillis: number;
   isEnvironmentInstance?: boolean;

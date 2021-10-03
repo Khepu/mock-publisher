@@ -5,20 +5,23 @@ import { ParsedSchema, Schema } from './types';
 
 type propNames = {
   channel: amqp.Channel;
-  queueName: string;
+  publishQueueName: string;
   schema: Observable<Schema>;
   intervalMillis: number;
 };
 
 export const getPublisher = ({
   channel,
-  queueName,
+  publishQueueName,
   schema,
   intervalMillis,
 }: propNames): Observable<ParsedSchema> =>
   interval(intervalMillis).pipe(
     mergeMap(__ => schema.pipe(mergeMap(parseSchema))),
     tap(message =>
-      channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message)))
+      channel.sendToQueue(
+        publishQueueName,
+        Buffer.from(JSON.stringify(message))
+      )
     )
   );
