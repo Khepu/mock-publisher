@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export const isArray = Array.isArray;
 
 export const randomNum = (start: number, end: number): number =>
@@ -19,6 +21,9 @@ export const randomString = (start: number, end: number) => {
     .join('');
 };
 
+export const just = <T>(val: T): Observable<T> =>
+  new Observable(subscriber => subscriber.next(val));
+
 export const parseBoolean = (str: string): boolean => {
   switch (str.toLowerCase()) {
     case 'true':
@@ -31,3 +36,5 @@ export const parseBoolean = (str: string): boolean => {
       throw new Error('Invalid boolean string');
   }
 };
+
+export class StreamEnd {}

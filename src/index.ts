@@ -30,7 +30,7 @@ const main = async () => {
     connectionUri: `amqp://${rabbitUser}:${rabbitPass}@${rabbitHost}:${rabbitPort}`,
     publishQueueName: getEnv('RABBIT_PUBLISH_QUEUE'),
     consumeQueueName: getEnv('RABBIT_CONSUME_QUEUE'),
-    schema: getSchema(getEnv('SCHEMA_PATH')),
+    schema: getSchema(getEnv('SCHEMA_NAME')),
     intervalMillis: parseInt(getEnv('INTERVAL')),
     isEnvironmentInstance: parseBoolean(getEnv('IS_INSTANCE', true)),
     host: getEnv('HOST', true),
@@ -65,6 +65,7 @@ const main = async () => {
     .subscribe({
       next: console.log,
       error: err => console.log(`Error_${err}`),
+      complete: () => console.log('Ran out of elements, closing stream'),
     });
 
   from(channel)
@@ -83,6 +84,7 @@ const main = async () => {
   const app = express();
 
   app.get('/health', async (req, res) => {
+    console.log('Received a health check request');
     res.sendStatus(200);
   });
 

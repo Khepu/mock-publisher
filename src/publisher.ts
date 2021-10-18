@@ -1,12 +1,22 @@
-import { interval, tap, mergeMap, Observable } from 'rxjs';
+import {
+  interval,
+  tap,
+  mergeMap,
+  Observable,
+  from,
+  takeUntil,
+  takeWhile,
+} from 'rxjs';
 import amqp from 'amqplib';
 import { parseSchema } from './utils/parse-schema';
 import { ParsedSchema, Schema } from './types';
+import e from 'express';
+import { just, StreamEnd } from './utils/helpers';
 
 type propNames = {
   channel: amqp.Channel;
   publishQueueName: string;
-  schema: Observable<Schema>;
+  schema: Observable<Schema[] | Schema>;
   intervalMillis: number;
 };
 
@@ -15,9 +25,20 @@ export const getPublisher = ({
   publishQueueName,
   schema,
   intervalMillis,
-}: propNames): Observable<ParsedSchema> =>
+}: propNames): Observable<ParsedSchema | StreamEnd> =>
   interval(intervalMillis).pipe(
-    mergeMap(__ => schema.pipe(mergeMap(parseSchema))),
+    mergeMap(num =>
+      schema.pipe(
+        mergeMap(a => {
+          if (Array.isArray(a)) {
+            return a[num] ? parseSchema(a[num]) : just(new StreamEnd());
+          } else {
+            return parseSchema(a);
+          }
+        })
+      )
+    ),
+    takeWhile(message => !(message instanceof StreamEnd)),
     tap(message =>
       channel.sendToQueue(
         publishQueueName,
