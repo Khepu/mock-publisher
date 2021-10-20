@@ -58,15 +58,19 @@ const generateArray =
 const parseArray =
   (schemaType: SchemaTypes) =>
   (parser: ToValueParser): GeneratedValue | GeneratedValueArray => {
-    if (schemaType.type === StaticValue) {
+    if (schemaType.type === undefined) {
+      throw new Error('Invalid Schema');
+    } else if (schemaType.type === StaticValue) {
       return schemaType.value;
-    }
-    if (schemaType.type === ArrayValue) {
+    } else if (schemaType.type === ArrayValue) {
       const { dimensions, of, lengths } = schemaType;
-      if (dimensions !== lengths.length) throw new Error('Invalid Schema');
+      if (dimensions !== lengths.length) {
+        throw new Error('Invalid Schema');
+      }
       return generateArray(lengths, dimensions, of)(parser);
+    } else {
+      return parser(schemaType.type);
     }
-    return parser(schemaType.type);
   };
 
 export const parseSchema = (schema: Schema): Observable<ParsedSchema> =>
