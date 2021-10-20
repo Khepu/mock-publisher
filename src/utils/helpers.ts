@@ -21,6 +21,9 @@ export const randomString = (start: number, end: number) => {
     .join('');
 };
 
+export const getRange = (end: number) =>
+  Object.keys(new Array(end).fill(0)).map(num => parseInt(num));
+
 export const just = <T>(val: T): Observable<T> =>
   new Observable(subscriber => subscriber.next(val));
 

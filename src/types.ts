@@ -18,14 +18,22 @@ export enum CustomValueType {
   FLOAT = 'float',
 }
 
+export const StaticValue: 'static' = 'static';
+
+export const ArrayValue: 'array' = 'array';
+
 export type SchemaTypes =
   | {
       type: 'array';
-      of: string;
+      of: CustomValueType;
       dimensions: number;
       lengths: number[];
     }
-  | { type: CustomValueType; value?: GeneratedValue };
+  | { type: CustomValueType }
+  | {
+      type: 'static';
+      value: GeneratedValue | GeneratedValueArray;
+    };
 
 export type Schema = {
   [key: string]: SchemaTypes;

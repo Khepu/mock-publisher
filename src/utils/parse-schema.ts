@@ -1,23 +1,25 @@
 import { from, map, Observable, reduce } from 'rxjs';
 import { v4 } from 'uuid';
 import {
+  ArrayValue,
   CustomValueType,
   GeneratedValue,
   GeneratedValueArray,
   ParsedSchema,
   Schema,
   SchemaTypes,
+  StaticValue,
   ToValueParser,
   ValueGenerator,
 } from '../types';
-import { randomFloat, randomNum, randomString } from './helpers';
+import { getRange, randomFloat, randomNum, randomString } from './helpers';
 
 const parseSchemaType: ToValueParser = type => {
   switch (type) {
     case CustomValueType.FLOAT:
       return randomFloat(-1, 1);
     case CustomValueType.INT:
-      return randomNum(1, 100);
+      return randomNum(0, 100);
     case CustomValueType.STRING:
       return randomString(10, 20);
     case CustomValueType.TIMESTAMP:
@@ -28,9 +30,6 @@ const parseSchemaType: ToValueParser = type => {
       throw new Error('Invalid schema');
   }
 };
-
-const getRange = (end: number) =>
-  Object.keys(new Array(end).fill(0)).map(num => parseInt(num));
 
 const splitArray = (array: any[], every: number) =>
   getRange(array.length / every).map(num =>
@@ -59,15 +58,15 @@ const generateArray =
 const parseArray =
   (schemaType: SchemaTypes) =>
   (parser: ToValueParser): GeneratedValue | GeneratedValueArray => {
-    if (schemaType.type === 'array') {
+    if (schemaType.type === StaticValue) {
+      return schemaType.value;
+    }
+    if (schemaType.type === ArrayValue) {
       const { dimensions, of, lengths } = schemaType;
       if (dimensions !== lengths.length) throw new Error('Invalid Schema');
       return generateArray(lengths, dimensions, of)(parser);
     }
-
-    return schemaType.value !== undefined
-      ? schemaType.value
-      : parser(schemaType.type);
+    return parser(schemaType.type);
   };
 
 export const parseSchema = (schema: Schema): Observable<ParsedSchema> =>
