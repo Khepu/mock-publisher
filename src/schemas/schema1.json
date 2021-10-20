@@ -8,5 +8,5 @@
     "dimensions": 4,
     "lengths": [3, 2, 2, 2]
   },
-  "predeterminedValue": { "type": "int", "value": 123 }
+  "predeterminedValue": { "type": "static", "value": 123 }
 }
