@@ -26,6 +26,8 @@ const main = async () => {
   const rabbitHost = getEnv('RABBIT_HOST');
   const rabbitPort = getEnv('RABBIT_PORT');
 
+  const nodePort = getEnv('NODE_PORT');
+
   const config: Configuration = {
     connectionUri: `amqp://${rabbitUser}:${rabbitPass}@${rabbitHost}:${rabbitPort}`,
     publishQueueName: getEnv('RABBIT_PUBLISH_QUEUE'),
@@ -88,7 +90,7 @@ const main = async () => {
     res.sendStatus(200);
   });
 
-  app.listen(5000);
+  app.listen(nodePort, () => console.log(`Listening to port ${nodePort}`));
 };
 
 main();

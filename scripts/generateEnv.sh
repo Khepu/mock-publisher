@@ -8,6 +8,7 @@
     echo "INTERVAL=$INTERVAL"
     echo "SCHEMA_PATH=$SCHEMA_PATH"
     echo "RABBIT_QUEUE=$RABBIT_QUEUE"
+    echo "NODE_PORT=$NODE_PORT"
 
     echo "LOGGING_LEVEL=$LOGGING_LEVEL"
 } > .env
