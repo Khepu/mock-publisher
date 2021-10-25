@@ -10,7 +10,6 @@ import {
 import amqp from 'amqplib';
 import { parseSchema } from './utils/parse-schema';
 import { ParsedSchema, Schema } from './types';
-import e from 'express';
 import { just, StreamEnd } from './utils/helpers';
 
 type propNames = {
@@ -27,9 +26,9 @@ export const getPublisher = ({
   intervalMillis,
 }: propNames): Observable<ParsedSchema | StreamEnd> =>
   interval(intervalMillis).pipe(
-    mergeMap(num =>
+    mergeMap((num) =>
       schema.pipe(
-        mergeMap(a => {
+        mergeMap((a) => {
           if (Array.isArray(a)) {
             return a[num] ? parseSchema(a[num]) : just(new StreamEnd());
           } else {
@@ -38,8 +37,8 @@ export const getPublisher = ({
         })
       )
     ),
-    takeWhile(message => !(message instanceof StreamEnd)),
-    tap(message =>
+    takeWhile((message) => !(message instanceof StreamEnd)),
+    tap((message) =>
       channel.sendToQueue(
         publishQueueName,
         Buffer.from(JSON.stringify(message))
