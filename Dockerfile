@@ -4,18 +4,8 @@ LABEL maintainer="Giorgos Makris <makris.giwrgos1234@gmail.com>"
 
 COPY . .
 
-ENV RABBIT_HOST=localhost \
-    RABBIT_PORT=5672 \
-    RABBIT_USER=guest \
-    RABBIT_PASS=guest \
-    IS_INSTANCE=false \
-    LOGGING_LEVEL=warn \
-    NODE_PORT=5000
-
 RUN yarn install \
-    && npm run build \
-    && chmod +x /scripts/generateEnv.sh \
-    && /scripts/generateEnv.sh
+    && npm run build
 
 FROM node:14.16.0-alpine
 
@@ -28,8 +18,8 @@ RUN apk add --no-cache \
 
 COPY --from=creator /build /opt/$USER/$PROJECT/build
 COPY --from=creator /node_modules /opt/$USER/$PROJECT/node_modules
-COPY --from=creator /.env /opt/$USER/$PROJECT/
 COPY --from=creator /scripts/run.sh /run.sh
+COPY --from=creator /healthcheck /healthcheck
 
 # sudo has a log-bug thus the "Set"
 # check https://github.com/sudo-project/sudo/issues/42
@@ -45,5 +35,7 @@ RUN addgroup -S $USER \
     && chmod 755 /run.sh
 
 USER $USER
+
+HEALTHCHECK CMD node healthcheck/check.js
 
 ENTRYPOINT [ "/run.sh" ]
