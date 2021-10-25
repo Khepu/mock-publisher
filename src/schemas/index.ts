@@ -5,8 +5,8 @@ import { join } from 'path';
 
 const readFile = promises.readFile;
 
-export const getSchema = (schemaName: string): Observable<Schema> =>
-  from(readFile(join(__dirname, `${schemaName}.json`))).pipe(
+export const getSchema = (): Observable<Schema> =>
+  from(readFile(join(__dirname, `schema.json`))).pipe(
     map((buffer: Buffer) => buffer.toString()),
     map(bufferString => JSON.parse(bufferString))
   );
