@@ -11,30 +11,23 @@ import express from 'express';
 
 import { mergeMap, from, tap } from 'rxjs';
 
-//"RABBIT_CONNECTION=amqp://${RABBIT_USER}:${RABBIT_PASS}@${RABBIT_HOST}:${RABBIT_PORT}/"
-
-//"RABBIT_USER=$RABBIT_USER"
-//"RABBIT_PASS=$RABBIT_PASS"
-//"RABBIT_HOST=$RABBIT_HOST"
-//"RABBIT_PORT=$RABBIT_PORT"
-
 const main = async () => {
-  dotenv.config();
+  // dotenv.config();
 
-  const rabbitUser = getEnv('RABBIT_USER');
-  const rabbitPass = getEnv('RABBIT_PASS');
-  const rabbitHost = getEnv('RABBIT_HOST');
-  const rabbitPort = getEnv('RABBIT_PORT');
+  const rabbitUser = getEnv('RABBIT_USER', false, 'guest');
+  const rabbitPass = getEnv('RABBIT_PASS', false, 'guest');
+  const rabbitHost = getEnv('RABBIT_HOST', false, 'localhost');
+  const rabbitPort = getEnv('RABBIT_PORT', false, '5672');
 
-  const nodePort = getEnv('NODE_PORT');
+  const nodePort = getEnv('NODE_PORT', false, '5000');
 
   const config: Configuration = {
     connectionUri: `amqp://${rabbitUser}:${rabbitPass}@${rabbitHost}:${rabbitPort}`,
     publishQueueName: getEnv('RABBIT_PUBLISH_QUEUE'),
     consumeQueueName: getEnv('RABBIT_CONSUME_QUEUE'),
-    schema: getSchema(getEnv('SCHEMA_NAME')),
-    intervalMillis: parseInt(getEnv('INTERVAL')),
-    isEnvironmentInstance: parseBoolean(getEnv('IS_INSTANCE', true)),
+    schema: getSchema(),
+    intervalMillis: parseInt(getEnv('INTERVAL', false, '1000')),
+    isEnvironmentInstance: parseBoolean(getEnv('IS_INSTANCE', true, 'false')),
     host: getEnv('HOST', true),
   };
 
@@ -52,7 +45,7 @@ const main = async () => {
 
   from(channel)
     .pipe(
-      tap(channel => channel.assertQueue(publishQueueName)),
+      tap((channel) => channel.assertQueue(publishQueueName)),
       mergeMap((channel: Channel) =>
         from(
           getPublisher({
@@ -66,19 +59,19 @@ const main = async () => {
     )
     .subscribe({
       next: console.log,
-      error: err => console.log(`Error_${err}`),
+      error: (err) => console.log(`Error_${err}`),
       complete: () => console.log('Ran out of elements, closing stream'),
     });
 
   from(channel)
     .pipe(
-      tap(channel => channel.assertQueue(consumeQueueName)),
-      tap(channel =>
+      tap((channel) => channel.assertQueue(consumeQueueName)),
+      tap((channel) =>
         channel
-          .consume(consumeQueueName, msg => {
+          .consume(consumeQueueName, (msg) => {
             console.log('Received Message__', msg?.content.toString());
           })
-          .catch(err => console.log(`Error_${err}`))
+          .catch((err) => console.log(`Error_${err}`))
       )
     )
     .subscribe();
