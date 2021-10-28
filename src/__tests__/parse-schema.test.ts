@@ -61,7 +61,7 @@ const isValidTimestamp = (genValue: any) => genValue instanceof Date;
 const isValidString = (genValue: any) => typeof genValue === 'string';
 
 test('Test validity of parsed schema', () =>
-  lastValueFrom(parseSchema(schema)).then(data => {
+  lastValueFrom(parseSchema(schema)).then((data) => {
     expect(Boolean(isValidUUID(data.id))).toBe(true);
     expect(Boolean(isValidTimestamp(data.createdAt))).toBe(true);
     expect(Boolean(_.isEqual(schema.staticNumAr.value, data.staticNumAr))).toBe(
@@ -80,7 +80,7 @@ test('Test validity of parsed schema', () =>
 
         if (Array.isArray(data.numAr[0][0])) {
           expect(Boolean(isValidArray(data.numAr[1]))).toBe(true);
-          expect(Boolean(data.numAr[0][0].length === 5)).toBe(true);
+          expect(Boolean(data.numAr[0][0].length === 123123)).toBe(true);
 
           if (Array.isArray(data.numAr[0][0][0])) {
             expect(Boolean(isValidArray(data.numAr[1]))).toBe(true);
@@ -112,7 +112,7 @@ const invalidSchema4 = [1, 2, 3, 4];
 
 test('Test invalid schema1', () => {
   expect.assertions(1);
-  return lastValueFrom(parseSchema(invalidSchema1)).catch(err =>
+  return lastValueFrom(parseSchema(invalidSchema1)).catch((err) =>
     expect(err).toBeInstanceOf(Error)
   );
 });
@@ -120,20 +120,20 @@ test('Test invalid schema1', () => {
 test('Test invalid schema2', () => {
   expect.assertions(1);
   return lastValueFrom(parseSchema(invalidSchema2 as unknown as Schema)).catch(
-    err => expect(err).toBeInstanceOf(Error)
+    (err) => expect(err).toBeInstanceOf(Error)
   );
 });
 
 test('Test invalid schema3', () => {
   expect.assertions(1);
   return lastValueFrom(parseSchema(invalidSchema3 as unknown as Schema)).catch(
-    err => expect(err).toBeInstanceOf(Error)
+    (err) => expect(err).toBeInstanceOf(Error)
   );
 });
 
 test('Test invalid schema4', () => {
   expect.assertions(1);
   return lastValueFrom(parseSchema(invalidSchema4 as unknown as Schema)).catch(
-    err => expect(err).toBeInstanceOf(Error)
+    (err) => expect(err).toBeInstanceOf(Error)
   );
 });

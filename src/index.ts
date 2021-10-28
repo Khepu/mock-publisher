@@ -8,11 +8,12 @@ import { parseBoolean } from './utils/helpers';
 import { Configuration } from './types';
 import { Channel } from 'amqplib';
 import express from 'express';
+import * as promClient from 'prom-client';
 
 import { mergeMap, from, tap } from 'rxjs';
 
 const main = async () => {
-  // dotenv.config();
+  dotenv.config();
 
   const rabbitUser = getEnv('RABBIT_USER', false, 'guest');
   const rabbitPass = getEnv('RABBIT_PASS', false, 'guest');
@@ -76,11 +77,20 @@ const main = async () => {
     )
     .subscribe();
 
+  const collectDefaultMetrics = promClient.collectDefaultMetrics;
+  collectDefaultMetrics();
+
   const app = express();
 
   app.get('/health', async (req, res) => {
     console.log('Received a health check request');
     res.sendStatus(200);
+  });
+
+  app.get('/metrics', async (req, res) => {
+    res.set('Content-Type', promClient.register.contentType);
+    const metrics = await promClient.register.metrics() 
+    res.send(metrics);
   });
 
   app.listen(nodePort, () => console.log(`Listening to port ${nodePort}`));

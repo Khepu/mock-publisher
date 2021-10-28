@@ -1,7 +1,6 @@
-pipeline:
-  build:
-    image: node
-    commands:
-      - go get
-      - go build
-      - go test
+kind: pipeline
+name: build
+
+steps:
+- name: test  
+  image: plugins/docker

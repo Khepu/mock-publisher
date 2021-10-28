@@ -1,4 +1,4 @@
-FROM node:14.16.0-buster as creator
+FROM node:14.16.0-buster as builder
 
 LABEL maintainer="Giorgos Makris <makris.giwrgos1234@gmail.com>"
 
@@ -6,6 +6,14 @@ COPY . .
 
 RUN yarn install \
     && npm run build
+
+FROM base as tester
+
+COPY --from=builder /build /build
+COPY --from=builder package.json package.json
+COPY --from=builder jest.config.js jest.config.js
+
+RUN yarn test
 
 FROM node:14.16.0-alpine
 
@@ -16,10 +24,10 @@ RUN apk add --no-cache \
     sudo \
     htop
 
-COPY --from=creator /build /opt/$USER/$PROJECT/build
-COPY --from=creator /node_modules /opt/$USER/$PROJECT/node_modules
-COPY --from=creator /scripts/run.sh /run.sh
-COPY --from=creator /healthcheck /healthcheck
+COPY --from=builder /build /opt/$USER/$PROJECT/build
+COPY --from=builder /node_modules /opt/$USER/$PROJECT/node_modules
+COPY --from=builder /scripts/run.sh /run.sh
+COPY --from=builder /healthcheck /healthcheck
 
 # sudo has a log-bug thus the "Set"
 # check https://github.com/sudo-project/sudo/issues/42
