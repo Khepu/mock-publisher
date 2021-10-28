@@ -80,7 +80,7 @@ test('Test validity of parsed schema', () =>
 
         if (Array.isArray(data.numAr[0][0])) {
           expect(Boolean(isValidArray(data.numAr[1]))).toBe(true);
-          expect(Boolean(data.numAr[0][0].length === 123123)).toBe(true);
+          expect(Boolean(data.numAr[0][0].length === 5)).toBe(true);
 
           if (Array.isArray(data.numAr[0][0][0])) {
             expect(Boolean(isValidArray(data.numAr[1]))).toBe(true);
