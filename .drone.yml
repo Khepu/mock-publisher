@@ -3,4 +3,6 @@ name: build
 
 steps:
 - name: test  
-  image: plugins/docker
+  image: node:14.16.0-buster
+  commands: 
+    - "test"
