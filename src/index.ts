@@ -79,7 +79,7 @@ const main = async () => {
 
   const collectDefaultMetrics = promClient.collectDefaultMetrics;
   collectDefaultMetrics();
-
+  //
   const app = express();
 
   app.get('/health', async (req, res) => {
@@ -89,7 +89,7 @@ const main = async () => {
 
   app.get('/metrics', async (req, res) => {
     res.set('Content-Type', promClient.register.contentType);
-    const metrics = await promClient.register.metrics() 
+    const metrics = await promClient.register.metrics();
     res.send(metrics);
   });
 
