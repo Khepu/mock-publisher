@@ -11,10 +11,11 @@ Run `docker build -t mock-publisher .` at the root directory.
 ### Running mock-publisher
 
 **1. Define a schema**
+
 A schema has the form of a JSON object with the keys specifying the names of the fields and the values being either constant values or specifications of the randomly generated values. 
 
 For example, the schema: 
-```
+```json
 {
   "id": { "type": "uuid" },
   "createdAt": { "type": "timestamp" },
@@ -51,6 +52,7 @@ Could produce the following sample values:
 ```
 
 **2. Run the container**
+
 The following configuration shows an example usage.
 
 ```
