@@ -1,6 +1,3 @@
 ## Mock Publisher
 
-To start working on this repository:
-- Clone and then run ```yarn``` to install dependencies.
-- To start, run ```yarn start```
-- To start in dev mode (with hot reloading), run ```yarn start:dev```
+A utility to aid in integration testing and stress testing other services that consume from and produce to rabbitmq queues.
